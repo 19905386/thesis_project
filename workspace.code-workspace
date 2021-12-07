@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "thesis_project",
+			"path": "."
+		},
+		{
+			"name": "features",
+			"path": "..\\del_clustering_2.0\\features"
+		}
+	],
+	"settings": {}
+}
