@@ -5,13 +5,20 @@
 Support functions for the src module
 """
 
-import os
+import os,sys
 from pathlib import Path
 import datetime as dt
 
+print(os.__file__)
+
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(parentdir)
+
+
 # root dir
 dlrdb_dir = str(Path(__file__).parents[0])
-
+print(dlrdb_dir)
 # level 1
 # experiment_dir = os.path.join(dlrdb_dir, 'experiment')
 # obs_dir = os.path.join(dlrdb_dir, 'observations')
@@ -25,6 +32,7 @@ log_dir = os.path.join(dlrdb_dir, 'log')
 # level 2 & 3 DATA
 # dpet_dir = os.path.join(data_dir, 'benchmark_model', 'dpet')
 # emdata_dir = os.path.join(data_dir, 'experimental_model')
+survey_dir = os.path.join(data_dir, 'survey_data')
 table_dir = os.path.join(data_dir, 'obs_datasets', 'tables')
 profiles_dir = os.path.join(data_dir, 'obs_datasets', 'profiles')
 # fdata_dir = os.path.join(data_dir, 'feature_data')
