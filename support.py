@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: Jason Avenant
+@author: MEDIA_LAB Avenant
 
 Support functions for the src module
 """
@@ -13,7 +13,7 @@ print(os.__file__)
 
 currentdir = os.path.dirname(os.path.realpath(__file__))
 parentdir = os.path.dirname(currentdir)
-sys.path.insert(parentdir)
+sys.path.append(parentdir)
 
 
 # root dir
