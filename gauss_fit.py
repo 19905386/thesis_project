@@ -55,16 +55,24 @@ def find_peaksMA(X):
     while range_min3(arrayYM1[0], indices_M[0][0]) == False:
         arrayYM[0][np.where(arrayYM[0] == np.amax(arrayYM[0]))] = 0
         indices_M = np.where(arrayYM[0] == np.amax(arrayYM[0]))
+        # print("arrayYM = {}".format(arrayYM))
+        all_zeros = not np.any(arrayYM[0])
+        if all_zeros == True:
+            return df, False
+        # print("all_zeros = {}".format(all_zeros))
   
     while range_min3(arrayYA1[0], indices_A[0][0]) == False:
         # Find the second largest peak
         arrayYA[0][np.where(arrayYA[0] == np.amax(arrayYA[0]))] = 0
         indices_A = np.where(arrayYA[0] == np.amax(arrayYA[0]))
+        all_zeros = not np.any(arrayYA[0])
+        if all_zeros == True:
+            return df, False
 
     df['0_x'] = indices_M[0] 
     df['0_y'] = indices_A[0] + 12 
 
-    return df
+    return df, True
 
 # Load data
 X = genX([1994,2014], drop_0 = True)
@@ -231,7 +239,11 @@ counter = 0
 for id in tqdm(Xbin['400-600']):
     counter = counter + 1
     houseID = id
-    df = describe_household(id = houseID)
+    df, check = describe_household(id = houseID)
+
+    # Check whether the household has any morning/afternoon peaks
+    if check == False:
+        continue
 
     # Determine the y-offset i.e. minimum value in day
     H_offset = df.iloc[0,:24].min()
