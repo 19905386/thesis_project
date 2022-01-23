@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -43,29 +42,29 @@ def find_peaksMA(X):
     listYM  = list(map(lambda x : x[0:12],arrayY))
     listYA  = list(map(lambda x : x[12:],arrayY))
 
-    arrayYM = np.array(listYM)
-    arrayYA = np.array(listYA)
+    arrayYM = cp.array(listYM)
+    arrayYA = cp.array(listYA)
 
-    arrayYM1 = np.array(listYM)
-    arrayYA1 = np.array(listYA)
+    arrayYM1 = cp.array(listYM)
+    arrayYA1 = cp.array(listYA)
 
-    indices_M = np.where(arrayYM[0] == np.amax(arrayYM[0]))
-    indices_A = np.where(arrayYA[0] == np.amax(arrayYA[0]))
+    indices_M = cp.where(arrayYM[0] == cp.amax(arrayYM[0]))
+    indices_A = cp.where(arrayYA[0] == cp.amax(arrayYA[0]))
 
     while range_min3(arrayYM1[0], indices_M[0][0]) == False:
-        arrayYM[0][np.where(arrayYM[0] == np.amax(arrayYM[0]))] = 0
-        indices_M = np.where(arrayYM[0] == np.amax(arrayYM[0]))
+        arrayYM[0][cp.where(arrayYM[0] == cp.amax(arrayYM[0]))] = 0
+        indices_M = cp.where(arrayYM[0] == cp.amax(arrayYM[0]))
         # print("arrayYM = {}".format(arrayYM))
-        all_zeros = not np.any(arrayYM[0])
+        all_zeros = not cp.any(arrayYM[0])
         if all_zeros == True:
             return df, False
         # print("all_zeros = {}".format(all_zeros))
   
     while range_min3(arrayYA1[0], indices_A[0][0]) == False:
         # Find the second largest peak
-        arrayYA[0][np.where(arrayYA[0] == np.amax(arrayYA[0]))] = 0
-        indices_A = np.where(arrayYA[0] == np.amax(arrayYA[0]))
-        all_zeros = not np.any(arrayYA[0])
+        arrayYA[0][cp.where(arrayYA[0] == cp.amax(arrayYA[0]))] = 0
+        indices_A = cp.where(arrayYA[0] == cp.amax(arrayYA[0]))
+        all_zeros = not cp.any(arrayYA[0])
         if all_zeros == True:
             return df, False
 
@@ -108,11 +107,11 @@ def describe_household(id):
 
     #    H1_d1.drop("index", axis = 1, inplace=True)
               
-       return H1_d1, check
+       return H1_d1
 
 #Define the Gaussian function
 def gauss(x, H, A, mu, sigma):
-    return H + A * np.exp(-(x - mu) ** 2 / (2 * sigma ** 2))
+    return H + A * cp.exp(-(x - mu) ** 2 / (2 * sigma ** 2))
 
 # Define function that approximates straight line
 def straight_line(m,x,b):
@@ -141,7 +140,7 @@ def Sigma1(increment = 0):
             i1 = df['0_x'].values[0]-int(c) # i returns the index of the lower boundary of range
             break
 
-    range1 = 2*(np.sqrt((df['0_x'].values[0] - i1)**2))
+    range1 = 2*(cp.sqrt((df['0_x'].values[0] - i1)**2))
     
     sigma1 = range1/p1
 
@@ -166,7 +165,7 @@ def Sigma2(increment = 0):
             i1 = df['0_x'].values[0]+int(c) # i returns the index of the lower boundary of range
             break
 
-    range1 = 2*(np.sqrt((df['0_x'].values[0] - i1)**2))
+    range1 = 2*(cp.sqrt((df['0_x'].values[0] - i1)**2))
 
     sigma1 = range1/p1
 
@@ -192,7 +191,7 @@ def Sigma3(increment = 0):
             i2 = df['0_y'].values[0]-int(c)+1 # i returns the index of the lower boundary of range
             break
 
-    range2 = 2*(np.sqrt((df['0_y'].values[0] - i2)**2))
+    range2 = 2*(cp.sqrt((df['0_y'].values[0] - i2)**2))
 
     sigma2 = range2/p2
 
@@ -222,7 +221,7 @@ def Sigma4(increment=0):
             i2 = df['0_y'].values[0]+int(c)
             break
 
-    range2 = 2*(np.sqrt((df['0_y'].values[0] - i2)**2))
+    range2 = 2*(cp.sqrt((df['0_y'].values[0] - i2)**2))
     
     sigma2 = range2/p2
 
@@ -231,12 +230,12 @@ def Sigma4(increment=0):
 
 # Create dataframe to store RMSE
 list_ids = []
-for id in Xbin['150-400']:
+for id in Xbin['1200-2500']:
     list_ids.append(id)
 
 ids_df = pd.DataFrame(index = list_ids, columns = ['RMSE'])
 counter = 0
-for id in tqdm(Xbin['150-400']):
+for id in tqdm(Xbin['1200-2500']):
     counter = counter + 1
     houseID = id
     df, check = describe_household(id = houseID)
@@ -261,9 +260,9 @@ for id in tqdm(Xbin['150-400']):
 
     # Calculate error
     actual = df.iloc[0,i1:df['0_x'].values[0]].to_list()
-    predicted = gauss(np.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1)
+    predicted = gauss(cp.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1)
     MSE = mean_squared_error(actual, predicted)
-    RMSE = math.sqrt(MSE)
+    RMSE = cp.sqrt(MSE)
 
     tolerance1 = RMSE - RMSE*0.95
     i = 0.1 # Constant value by which to increase/decrease the range in the initial sigma function
@@ -272,22 +271,22 @@ for id in tqdm(Xbin['150-400']):
         previous_error1 = RMSE
 
         sigma1, i1= Sigma1(increment = i)
-        predicted = gauss(np.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
+        predicted = gauss(cp.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
         MSE = mean_squared_error(actual, predicted)
-        RMSE = math.sqrt(MSE)   
+        RMSE = cp.sqrt(MSE)   
         # conditional for gauss 1
         if RMSE > previous_error1:
             i = i + 0.1
             sigma1, i1 = Sigma1(increment = i)
-            predicted = gauss(np.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
+            predicted = gauss(cp.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE) 
+            RMSE = cp.sqrt(MSE) 
         else:
             i = i - 0.1
             sigma1, i1 = Sigma1(increment = i)
-            predicted = gauss(np.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
+            predicted = gauss(cp.arange(i1,df['0_x'].values[0],1),H_offset,A1,mu1,sigma1) # Get the value of the gauss one point above the min peak
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE) 
+            RMSE = cp.sqrt(MSE) 
 
         t = t + 1
         if t >= 10000:
@@ -297,16 +296,16 @@ for id in tqdm(Xbin['150-400']):
 
     RMSE1 = RMSE
     # print("RMSE1 = {}".format(RMSE1))
-    sigma1 = np.sqrt(sigma1**2)
+    sigma1 = cp.sqrt(sigma1**2)
     # **********************************************************************************************************************************************
     # Fit the secnd gaussian
     sigma2, i2= Sigma2()
 
     # Calculate error
     actual = df.iloc[0,df['0_x'].values[0]:i2].to_list()
-    predicted = gauss(np.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
+    predicted = gauss(cp.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
     MSE = mean_squared_error(actual, predicted)
-    RMSE = math.sqrt(MSE)
+    RMSE = cp.sqrt(MSE)
 
     tolerance2 = RMSE - RMSE*0.95
     # print(tolerance2)
@@ -320,23 +319,23 @@ for id in tqdm(Xbin['150-400']):
         # print("predicted = {}".format(predicted))
         previous_error2 = RMSE
         sigma2, i2 = Sigma2(increment = i)
-        predicted = gauss(np.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
+        predicted = gauss(cp.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
         MSE = mean_squared_error(actual, predicted)
-        RMSE = math.sqrt(MSE)
+        RMSE = cp.sqrt(MSE)
         
         # Conditional for gauss2
         if RMSE > previous_error2:
             i = i + 0.1
             sigma2, i2 = Sigma2(increment = i)
-            predicted = gauss(np.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
+            predicted = gauss(cp.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
         else:
             i = i -0.1        
             sigma2, i2 = Sigma2(increment = i)
-            predicted = gauss(np.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
+            predicted = gauss(cp.arange(df['0_x'].values[0],i2,1),H_offset,A1,mu1,sigma2)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
 
         t = t + 1
         if t >= 1000:
@@ -347,7 +346,7 @@ for id in tqdm(Xbin['150-400']):
 
     RMSE2 = RMSE
     # print("RMSE2 = {}".format(RMSE2))
-    sigma2 = np.sqrt(sigma2**2)
+    sigma2 = cp.sqrt(sigma2**2)
     # **********************************************************************************************************************************************
     # Fit the third gaussian
     # Code that finds the value one point above the range index
@@ -355,9 +354,9 @@ for id in tqdm(Xbin['150-400']):
 
     # Calculate error
     actual = df.iloc[0,i3:df['0_y'].values[0]].to_list()
-    predicted = gauss(np.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
+    predicted = gauss(cp.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
     MSE = mean_squared_error(actual, predicted)
-    RMSE = math.sqrt(MSE)
+    RMSE = cp.sqrt(MSE)
 
     tolerance1 = RMSE - RMSE*0.95
     i = 0.1 # Constant value by which to increase/decrease the range in the initial sigma function
@@ -368,25 +367,25 @@ for id in tqdm(Xbin['150-400']):
         # print("RMSE = {}".format(RMSE))
 
         sigma3, i3 = Sigma3(increment = i)
-        predicted = gauss(np.arange(i3,df['0_y'].values[0],1), H_offset, A2, mu2, sigma3)
+        predicted = gauss(cp.arange(i3,df['0_y'].values[0],1), H_offset, A2, mu2, sigma3)
         # print('actual = {}'.format(actual))
         # print('predicted = {}'.format(predicted))
         MSE = mean_squared_error(actual, predicted)
-        RMSE = math.sqrt(MSE)
+        RMSE = cp.sqrt(MSE)
 
         # conditional for gauss 1
         if RMSE > previous_error3:
             i = i + 0.1
             sigma3, i3 = Sigma3(increment = i)
-            predicted = gauss(np.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
+            predicted = gauss(cp.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
         else:
             i = i - 0.1
             sigma3, i3 = Sigma3(increment = i)
-            predicted = gauss(np.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
+            predicted = gauss(cp.arange(i3,df['0_y'].values[0],1),H_offset,A2,mu2,sigma3)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
 
         t = t + 1
         if t >= 10000:
@@ -397,15 +396,15 @@ for id in tqdm(Xbin['150-400']):
 
     RMSE3 = RMSE
     # print("RMSE3 = {}".format(RMSE))
-    sigma3 = np.sqrt(sigma3**2)
+    sigma3 = cp.sqrt(sigma3**2)
     # **********************************************************************************************************************************************
     # Fit the 4th gaussian
     sigma4, i4= Sigma4()
 
     actual = df.iloc[0,df['0_y'].values[0]:i4].to_list()
-    predicted = gauss(np.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
+    predicted = gauss(cp.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
     MSE = mean_squared_error(actual, predicted)
-    RMSE = math.sqrt(MSE)
+    RMSE = cp.sqrt(MSE)
 
     tolerance2 = RMSE - RMSE*0.95
     # print(tolerance2)
@@ -416,24 +415,24 @@ for id in tqdm(Xbin['150-400']):
         # print('sigma4 = {}'.format(sigma4))
         # print('RMSE = {}'.format(RMSE))
         sigma4, i4 = Sigma4(increment = i)
-        predicted = gauss(np.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
+        predicted = gauss(cp.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
         MSE = mean_squared_error(actual, predicted)
-        RMSE = math.sqrt(MSE)
+        RMSE = cp.sqrt(MSE)
         
         # Conditional for gauss2
         if RMSE > previous_error4:
             i = i + 0.1
             sigma4, i4 = Sigma4(increment = i)
-            predicted = gauss(np.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
+            predicted = gauss(cp.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
 
         else:
             i = i - 0.1        
             sigma4, i4 = Sigma4(increment = i)
-            predicted = gauss(np.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
+            predicted = gauss(cp.arange(df['0_y'].values[0],i4,1),H_offset,A2,mu2,sigma4)
             MSE = mean_squared_error(actual, predicted)
-            RMSE = math.sqrt(MSE)
+            RMSE = cp.sqrt(MSE)
 
         t = t + 1
         if t >= 10000:
@@ -442,16 +441,16 @@ for id in tqdm(Xbin['150-400']):
             tolerance2 = tolerance2 + 0.1
     # print(tolerance2)
     RMSE4 = RMSE
-    sigma4 = np.sqrt(sigma4**2)
+    sigma4 = cp.sqrt(sigma4**2)
     # **********************************************************************************************************************************************
     # Determine the complete synthetic profile
-    x_1 = np.arange(0, mu1, 1)
-    x_2 = np.arange(mu1, i2, 1)
-    x_3 = np.arange(i3, mu2,1)
-    x_4 = np.arange(mu2, 24,1)
+    x_1 = cp.arange(0, mu1, 1)
+    x_2 = cp.arange(mu1, i2, 1)
+    x_3 = cp.arange(i3, mu2,1)
+    x_4 = cp.arange(mu2, 24,1)
 
-    x_vals = np.hstack((x_1,x_2,x_3,x_4))
-    x_vals_1 = np.unique(x_vals)
+    x_vals = cp.hstack((x_1,x_2,x_3,x_4))
+    x_vals_1 = cp.unique(x_vals)
 
     y1 = gauss(x_1, H_offset,A1,mu1,sigma1)
     y2 = gauss(x_2, H_offset,A1,mu1,sigma2)
@@ -464,56 +463,56 @@ for id in tqdm(Xbin['150-400']):
             # print('repeating value')
             x_3 = x_3[1:] # Remove the first value of the x-array
             y3 = gauss(x_3, H_offset,A2,mu2,sigma3) # Re-calculate the y-values for gauss 3
-            synth = np.hstack((y1,y2,y3,y4)) # Generate the synthetic values
+            synth = cp.hstack((y1,y2,y3,y4)) # Generate the synthetic values
         else:
-            synth = np.hstack((y1,y2,y3,y4)) # If there is no repeating values in x_2 and x_3 then generate synthetic profiles without adjusting x_3's values
+            synth = cp.hstack((y1,y2,y3,y4)) # If there is no repeating values in x_2 and x_3 then generate synthetic profiles without adjusting x_3's values
 
     else:
         # print("Missing hours need to be saved")
-        x_5 = np.arange(i2,i3,1)
-        x_vals_1 = np.hstack((x_1,x_2,x_5,x_3,x_4))
-        x_vals_1 = np.unique(x_vals_1)
+        x_5 = cp.arange(i2,i3,1)
+        x_vals_1 = cp.hstack((x_1,x_2,x_5,x_3,x_4))
+        x_vals_1 = cp.unique(x_vals_1)
 
         # Synthesize the mid range behaviour
         m = (gauss(x_3[0], H_offset,A2,mu2,sigma3) - gauss(x_2[-1], H_offset,A1,mu1,sigma2))/(x_3[0]-x_2[-1]) # Calculate slope
         b = gauss(x_3[0], H_offset,A2,mu2,sigma3) - m*x_3[0] # Calculate b constant for straight line equation
         y_mid = straight_line(m,x_5,b)
 
-        synth = np.hstack((y1,y2,y_mid,y3,y4))
+        synth = cp.hstack((y1,y2,y_mid,y3,y4))
     # **********************************************************************************************************************************************
     # Calculate the synthetic profiles RMSE
     actual = df.iloc[0,0:24]
     predicted = synth
     MSE = mean_squared_error(actual, predicted)
-    RMSE = math.sqrt(MSE)
+    RMSE = cp.sqrt(MSE)
     # **********************************************************************************************************************************************
     # Store the RMSE error
     ids_df.loc[id] = RMSE
     # **********************************************************************************************************************************************
-    # if counter%50 == 0:
-    #     # Save plot of fit
-    #     fig, ax = plt.subplots(figsize=(12,6))
-    #     plt.style.use('fivethirtyeight')  
+    if counter%50 == 0:
+        # Save plot of fit
+        fig, ax = plt.subplots(figsize=(12,6))
+        plt.style.use('fivethirtyeight')  
 
-    #     # Plot the households loadprofile
-    #     fig = plt.plot(describe_household(id = houseID).iloc[0,0:24], linewidth = 1.5, label = "Measured Profile")#, linestyle = 'dashed')
-    #     plt.title("Household "+str(i))
-    #     x_all = np.arange(0,24,1)
-    #     # Plot Gauss Fit
-    #     ax.plot(x_all,synth,linewidth = 1.5, color = 'purple',label = "Synthetic Profile, RMSE = " + str('{0:.3g}'.format(RMSE)))
+        # Plot the households loadprofile
+        fig = plt.plot(describe_household(id = houseID).iloc[0,0:24], linewidth = 1.5, label = "Measured Profile")#, linestyle = 'dashed')
+        plt.title("Household "+str(i))
+        x_all = cp.arange(0,24,1)
+        # Plot Gauss Fit
+        ax.plot(x_all,synth,linewidth = 1.5, color = 'purple',label = "Synthetic Profile, RMSE = " + str('{0:.3g}'.format(RMSE)))
 
-    #     plt.legend(loc = "upper left")
-    #     # Set the labels and axis limits
-    #     ax.set_xlim([0,24])
-    #     ax.set_xlabel('Time of day')
-    #     ax.set_ylabel("Amplitude")
-    #     ax.set_title('Synthetic Profile: Household ' + str(houseID))
+        plt.legend(loc = "upper left")
+        # Set the labels and axis limits
+        ax.set_xlim([0,24])
+        ax.set_xlabel('Time of day')
+        ax.set_ylabel("Amplitude")
+        ax.set_title('Synthetic Profile: Household ' + str(houseID))
 
-    #     # # Save the figure
-    #     plt.savefig('Synthetic Profile' + str(houseID) + '.png', dpi=72, bbox_inches='tight')
+        # # Save the figure
+        plt.savefig('Synthetic Profile' + str(houseID) + '.png', dpi=72, bbox_inches='tight')
     # **********************************************************************************************************************************************
     # **********************************************************************************************************************************************
     # **********************************************************************************************************************************************
 
 
-ids_df.to_csv('RMSE_150_400.csv', header=False, index=False)
+ids_df.to_csv('RMSE_1200-2500.csv', header=False, index=False)
