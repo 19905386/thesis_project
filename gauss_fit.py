@@ -231,12 +231,13 @@ def Sigma4(increment=0):
 
 # Create dataframe to store RMSE
 list_ids = []
-for id in Xbin['150-400']:
+for id in Xbin['50-150']:
     list_ids.append(id)
 
 ids_df = pd.DataFrame(index = list_ids, columns = ['RMSE'])
 counter = 0
-for id in tqdm(Xbin['150-400']):
+
+for id in tqdm(Xbin['50-150']):
     counter = counter + 1
     houseID = id
     df, check = describe_household(id = houseID)
@@ -516,4 +517,4 @@ for id in tqdm(Xbin['150-400']):
     # **********************************************************************************************************************************************
 
 
-ids_df.to_csv('RMSE_150_400.csv', header=False, index=False)
+ids_df.to_csv('RMSE_50_150.csv', header=False, index=False)
