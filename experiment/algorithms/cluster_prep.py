@@ -18,8 +18,8 @@ import feather
 import time
 from datetime import date
 
-# from experiment.algorithms.cluster_metrics import mean_index_adequacy, davies_bouldin_score #, cluster_dispersion_index
-# from support import cluster_dir, results_dir
+from experiment.algorithms.cluster_metrics import mean_index_adequacy, davies_bouldin_score #, cluster_dispersion_index
+from support import cluster_dir, results_dir
 from features.feature_ts import resampleProfiles
 
 # def progress(n, stats):
@@ -30,97 +30,97 @@ from features.feature_ts import resampleProfiles
 #     s += "\nmia: %(mia).3f " % stats  
 #     return print(s)
     
-# def clusterStats(cluster_stats, n, X, cluster_labels, preprocessing, transform, tic, toc):   
+def clusterStats(cluster_stats, n, X, cluster_labels, transform, tic, toc):   # preprocessing,
    
-#     stats = {'n_sample': 0,
-#          'cluster_size': [],
-#          'silhouette': 0.0,
-#          'dbi': 0.0,
-#          'mia': 0.0,
-#          'all_scores': 0.0,
-# #             'cdi': 0.0,
-#          't0': time.time(),
-#          'batch_fit_time': 0.0,
-#          'total_sample': 0}
+    stats = {'n_sample': 0,
+         'cluster_size': [],
+         'silhouette': 0.0,
+         'dbi': 0.0,
+         'mia': 0.0,
+         'all_scores': 0.0,
+#             'cdi': 0.0,
+         't0': time.time(),
+         'batch_fit_time': 0.0,
+         'total_sample': 0}
 
-#     cluster_stats[n] = stats
-#     try:
-#         cluster_stats[n]['total_sample'] += X.shape[0]
-#         cluster_stats[n]['n_sample'] = X.shape[0]
-#         cluster_stats[n]['silhouette'] = silhouette_score(X, cluster_labels, sample_size=10000)
-#         cluster_stats[n]['dbi'] = davies_bouldin_score(X, cluster_labels)
-#         cluster_stats[n]['mia'] = mean_index_adequacy(X, cluster_labels)
-#         #cluster_stats[n_clusters][y]['cdi'] =cluster_dispersion_index(Xbatch, cluster_labels) DON'T RUN LOCALLY!! - need to change to chunked alogrithm once released
-#         cluster_stats[n]['cluster_size'] = np.bincount(cluster_labels)
-#         cluster_stats[n]['batch_fit_time'] = toc - tic
-#         cluster_stats[n]['preprocessing'] = preprocessing
-#         cluster_stats[n]['transform'] = transform
-#         cluster_stats[n]['all_scores'] = cluster_stats[n]['dbi']*cluster_stats[n]['mia']/cluster_stats[n]['silhouette']
+    cluster_stats[n] = stats
+    try:
+        cluster_stats[n]['total_sample'] += X.shape[0]
+        cluster_stats[n]['n_sample'] = X.shape[0]
+        cluster_stats[n]['silhouette'] = silhouette_score(X, cluster_labels, sample_size=10000)
+        cluster_stats[n]['dbi'] = davies_bouldin_score(X, cluster_labels)
+        cluster_stats[n]['mia'] = mean_index_adequacy(X, cluster_labels)
+        #cluster_stats[n_clusters][y]['cdi'] =cluster_dispersion_index(Xbatch, cluster_labels) DON'T RUN LOCALLY!! - need to change to chunked alogrithm once released
+        cluster_stats[n]['cluster_size'] = np.bincount(cluster_labels)
+        cluster_stats[n]['batch_fit_time'] = toc - tic
+        # cluster_stats[n]['preprocessing'] = preprocessing
+        cluster_stats[n]['transform'] = transform
+        cluster_stats[n]['all_scores'] = cluster_stats[n]['dbi']*cluster_stats[n]['mia']/cluster_stats[n]['silhouette']
 
-#         s = "%s : " % (n)                    
-#         s += "\nsilhouette: %(silhouette).3f " % stats
-#         s += "\ndbi: %(dbi).3f " % stats
-#         s += "\nmia: %(mia).3f " % stats
-#         print(s)
+        s = "%s : " % (n)                    
+        s += "\nsilhouette: %(silhouette).3f " % stats
+        s += "\ndbi: %(dbi).3f " % stats
+        s += "\nmia: %(mia).3f " % stats
+        # print(s)
 
-#     except:
-#         print('Could not compute clustering stats for n = ' + str(n))
-#         pass
+    except:
+        print('Could not compute clustering stats for n = ' + str(n))
+        pass
 
-#     return cluster_stats
+    return cluster_stats
 
-# def saveResults(experiment_name, cluster_stats, cluster_centroids, som_dim, elec_bin, save=True):
-#     """
-#     Saves cluster stats results and centroids for a single clustering iteration. 
-#     Called inside kmeans() and som() functions.
-#     """
+def saveResults(experiment_name, cluster_stats, cluster_centroids, som_dim, save=True):# , elec_bin
+    """
+    Saves cluster stats results and centroids for a single clustering iteration. 
+    Called inside kmeans() and som() functions.
+    """
 
-#     for k, v in cluster_stats.items():
-#         n = k
+    for k, v in cluster_stats.items():
+        n = k
                         
-#     evals = pd.DataFrame(cluster_stats).T
-#     evals['experiment_name'] = experiment_name
-#     evals['som_dim'] = som_dim
-#     evals['n_clust'] = n
-#     evals['elec_bin'] = elec_bin
-#     eval_results = evals.drop(labels='cluster_size', axis=1).reset_index(drop=True)
-# #    eval_results.rename({'index':'k'}, axis=1, inplace=True)
-#     eval_results[['dbi','mia','silhouette']] = eval_results[['dbi','mia','silhouette']].astype(float)
-#     eval_results['date'] = date.today().isoformat()
-# #    eval_results['best_clusters'] = None
+    evals = pd.DataFrame(cluster_stats).T
+    evals['experiment_name'] = experiment_name
+    evals['som_dim'] = som_dim
+    evals['n_clust'] = n
+    # evals['elec_bin'] = elec_bin
+    eval_results = evals.drop(labels='cluster_size', axis=1).reset_index(drop=True)
+#    eval_results.rename({'index':'k'}, axis=1, inplace=True)
+    eval_results[['dbi','mia','silhouette']] = eval_results[['dbi','mia','silhouette']].astype(float)
+    eval_results['date'] = date.today().isoformat()
+#    eval_results['best_clusters'] = None
 
-#     centroid_results = pd.DataFrame(cluster_centroids)   
-#     centroid_results['experiment_name'] = experiment_name
-#     centroid_results['som_dim'] = som_dim
-#     centroid_results['n_clust'] = n
-#     centroid_results['elec_bin'] = elec_bin
-#     try:
-#         centroid_results['cluster_size'] = evals['cluster_size'][n]
-#     except:
-#         centroid_results['cluster_size'] = np.nan
-#     centroid_results.reset_index(inplace=True)
-#     centroid_results.rename({'index':'k'}, axis=1, inplace=True)
-#     centroid_results['date'] = date.today().isoformat()
+    centroid_results = pd.DataFrame(cluster_centroids)   
+    centroid_results['experiment_name'] = experiment_name
+    centroid_results['som_dim'] = som_dim
+    centroid_results['n_clust'] = n
+    # centroid_results['elec_bin'] = elec_bin
+    try:
+        centroid_results['cluster_size'] = evals['cluster_size'][n]
+    except:
+        centroid_results['cluster_size'] = np.nan
+    centroid_results.reset_index(inplace=True)
+    centroid_results.rename({'index':'k'}, axis=1, inplace=True)
+    centroid_results['date'] = date.today().isoformat()
     
-#     #3 Save Results
-#     if save is True:
-#         os.makedirs(results_dir, exist_ok=True)    
-#         erpath = os.path.join(results_dir, 'cluster_results.csv')    
-#         if os.path.isfile(erpath):
-#             eval_results.to_csv(erpath, mode='a', index=False, header=False)
-#         else:
-#             eval_results.to_csv(erpath, index=False)
+    #3 Save Results
+    if save is True:
+        os.makedirs(results_dir, exist_ok=True)    
+        erpath = os.path.join(results_dir, 'cluster_results.csv')    
+        if os.path.isfile(erpath):
+            eval_results.to_csv(erpath, mode='a', index=False, header=False)
+        else:
+            eval_results.to_csv(erpath, index=False)
 
-#         os.makedirs(cluster_dir, exist_ok=True)   
-#         crpath = os.path.join(cluster_dir, experiment_name + '_centroids.csv')    
-#         if os.path.isfile(crpath):
-#             centroid_results.to_csv(crpath, mode='a', index=False, header=False)
-#         else:
-#             centroid_results.to_csv(crpath, index=False)
+        os.makedirs(cluster_dir, exist_ok=True)   
+        crpath = os.path.join(cluster_dir, experiment_name + '_centroids.csv')    
+        if os.path.isfile(crpath):
+            centroid_results.to_csv(crpath, mode='a', index=False, header=False)
+        else:
+            centroid_results.to_csv(crpath, index=False)
         
-#         print('Results saved for', experiment_name, str(som_dim), str(n))
+        print('Results saved for', experiment_name, str(som_dim), str(n))
     
-#     return eval_results, centroid_results
+    return eval_results, centroid_results
 
 def xBins(X, bin_type):
 
@@ -188,53 +188,53 @@ def xBins(X, bin_type):
         
 #     return Xnorm
 
-# def bestClusters(cluster_lbls, stats, top_lbls):
+def bestClusters(cluster_lbls, stats, top_lbls):
 
-#     labels = pd.DataFrame(cluster_lbls)
+    labels = pd.DataFrame(cluster_lbls)
     
-#     if len(labels) > top_lbls:    
-# #        best_lbls = stats.nsmallest(columns=['dbi','mia'], n=top_lbls).nlargest(columns='silhouette',
-# #                                          n=top_lbls)[['n_clust','som_dim']].reset_index(drop=True)
-# #        b = stats.dbi*stats.mia/stats.silhouette
-#         stats.all_scores = stats.all_scores.astype('float')
-#         best_lbls = stats[stats.all_scores>0].nsmallest(columns='all_scores', n=top_lbls 
-#                          ).reset_index(drop=True)
-#         best_clusters = labels.loc[:, best_lbls['n_clust'].values]    
+    if len(labels) > top_lbls:    
+#        best_lbls = stats.nsmallest(columns=['dbi','mia'], n=top_lbls).nlargest(columns='silhouette',
+#                                          n=top_lbls)[['n_clust','som_dim']].reset_index(drop=True)
+#        b = stats.dbi*stats.mia/stats.silhouette
+        stats.all_scores = stats.all_scores.astype('float')
+        best_lbls = stats[stats.all_scores>0].nsmallest(columns='all_scores', n=top_lbls 
+                         ).reset_index(drop=True)
+        best_clusters = labels.loc[:, best_lbls['n_clust'].values]    
     
-#     else:
-#         best_lbls = stats[['n_clust','som_dim','elec_bin']]
-#         best_clusters = labels
+    else:
+        best_lbls = stats[['n_clust','som_dim']]#,'elec_bin']]
+        best_clusters = labels
     
-# #    best_clusters.columns = pd.MultiIndex.from_arrays([best_lbls['som_dim'], best_lbls['n_clust']],names=('som_dim','n_clust'))    
-#     stats.loc[stats['n_clust'].isin(best_lbls['n_clust'].values), 'best_clusters'] = 1
+#    best_clusters.columns = pd.MultiIndex.from_arrays([best_lbls['som_dim'], best_lbls['n_clust']],names=('som_dim','n_clust'))    
+    stats.loc[stats['n_clust'].isin(best_lbls['n_clust'].values), 'best_clusters'] = 1
     
-#     return best_clusters, stats
+    return best_clusters, stats
        
-# def saveLabels(cluster_lbls, stats):    
+def saveLabels(cluster_lbls, stats):    
 
-#     experiment_name = stats.experiment_name[0]
-#     elec_bin = stats.elec_bin[0]
-#     best_lbls = stats.loc[stats.best_clusters==1,['n_clust','som_dim','elec_bin']]
-#     best_lbls['experiment_name'] = experiment_name     
+    experiment_name = stats.experiment_name[0]
+    # elec_bin = stats.elec_bin[0]
+    best_lbls = stats.loc[stats.best_clusters==1,['n_clust','som_dim']]#,'elec_bin']]
+    best_lbls['experiment_name'] = experiment_name     
       
-# #    cluster_lbls[['ProfileID','date']] = pd.DataFrame(X).reset_index()[['ProfileID','date']]
-# #    cluster_lbls.set_index(['ProfileID','date'], inplace=True)
-# #    cluster_lbls.columns = pd.MultiIndex.from_arrays([best_lbls['som_dim'], best_lbls['n_clust']],names=('som_dim','n_clust'))
-# #    cluster_lbls.dropna(inplace=True)    
-#     cols = []
-# # TO DO this column order is wrong!!
-#     for i, j in zip(best_lbls['som_dim'],best_lbls['n_clust']):
-#         cols.append(str(i)+'_'+str(j))
-#     print(cols)
-#     cluster_lbls.columns = cols
+#    cluster_lbls[['ProfileID','date']] = pd.DataFrame(X).reset_index()[['ProfileID','date']]
+#    cluster_lbls.set_index(['ProfileID','date'], inplace=True)
+#    cluster_lbls.columns = pd.MultiIndex.from_arrays([best_lbls['som_dim'], best_lbls['n_clust']],names=('som_dim','n_clust'))
+#    cluster_lbls.dropna(inplace=True)    
+    cols = []
+# TO DO this column order is wrong!!
+    for i, j in zip(best_lbls['som_dim'],best_lbls['n_clust']):
+        cols.append(str(i)+'_'+str(j))
+    print(cols)
+    cluster_lbls.columns = cols
 
-#     wpath = os.path.join(cluster_dir, experiment_name + '_' + elec_bin + '_labels.feather')
-#     feather.write_dataframe(cluster_lbls, wpath)
+    wpath = os.path.join(cluster_dir, experiment_name + '_labels.feather')
+    feather.write_dataframe(cluster_lbls, wpath)
     
-#     blpath = os.path.join(results_dir, 'best_clusters.csv')
-#     if os.path.isfile(blpath):
-#         best_lbls.to_csv(blpath, mode='a', index=False, header=False)
-#     else:
-#         best_lbls.to_csv(blpath, index=False)
+    blpath = os.path.join(results_dir, 'best_clusters.csv')
+    if os.path.isfile(blpath):
+        best_lbls.to_csv(blpath, mode='a', index=False, header=False)
+    else:
+        best_lbls.to_csv(blpath, index=False)
     
-#     return print('Labels for best '+experiment_name+' clusters saved')
+    return print('Labels for best '+experiment_name+' clusters saved')
