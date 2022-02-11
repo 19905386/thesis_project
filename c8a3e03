@@ -1,0 +1,30 @@
+[33mb9e587f[m[33m ([m[1;36mHEAD -> [m[1;32mextract_features[m[33m)[m New Commit
+[33mc8a3e03[m Added data analyses code, improving MLR results
+[33mc3870a4[m Included large files
+[33m72f0ff3[m[33m ([m[1;31morigin/extract_features[m[33m)[m Updated Clustering, Updated Regression
+[33m1740791[m Added MLR
+[33m5e7981b[m Added  linear regression code
+[33mfdf34a1[m Added DBSCAN, OPTIC clustering
+[33m3c0eca3[m Updated clustering DBSCAN with Gowers
+[33m8c610c8[m Updated clustering code, k-means, DBSCAN
+[33mc7a69aa[m Updated code: Added MAPE,sMAPE and feature saving code
+[33m62e1646[m[33m ([m[1;31morigin/gauss_error[m[33m, [m[1;32mgauss_error[m[33m)[m Added RMSE results, 400-600 and 600-1200
+[33mc424981[m Added code to extract Gauss Fit features
+[33m54e2e96[m Added new RMSE plots, sorted_households
+[33m1bed947[m Added RMSE results, 400-600 and 600-1200
+[33m1266f74[m Fixed infinite loop bug, profiles w/ no peaks
+[33m96dc574[m Updated peak finding code, more robust
+[33m86b8950[m Updated gauss fit error code, added RMSE
+[33mfed45ee[m Updates gauss fit code
+[33mf3b6d54[m Updated gauss fit graph
+[33me21b304[m Added gauss error index code
+[33me13d3f7[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Updated gauss fit code
+[33m056ef3a[m Added Gaussian Process Regression
+[33m512fe03[m Added gaussian fitting code
+[33m496201a[m Updated peak_finding code
+[33ma6a1674[m Created Ientify_peaks, work in progress
+[33mcd17e7d[m Updated ToP vs Amplitude
+[33m8abe0f9[m Updated peak detection code: households ToP_M/A count
+[33m9636883[m Working on peak detection code
+[33m1f9a7d2[m Initial commit
+[33m4e12983[m Initial commit
