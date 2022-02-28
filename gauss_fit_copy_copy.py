@@ -76,7 +76,11 @@ def find_peaksMA(X):
 
 # Load data
 # X = genX([1994,2014], drop_0 = True)
+<<<<<<< HEAD
 X = pd.read_csv('Summer_Weekdays_Dataframe.csv', index_col=['ProfileID','date'])
+=======
+X = pd.read_csv('Winter_Weekdays_Dataframe.csv', index_col=['ProfileID','date'])
+>>>>>>> 72f0ff34f9d4f6a2cba1bbad9479d7850fddfe18
 
 Xbin = xBins(X, 'amd')
 
@@ -537,7 +541,14 @@ for id in tqdm(Xbin['400-600']):
 gauss_df = gauss_df.set_index(['ProfileID'])
 # Save Gaussian Fit features in CSV
 gauss_df.drop(['DROP_ROW'],axis = 0, inplace = True)
+<<<<<<< HEAD
 gauss_df.to_csv('Summer_weekdays_FitFeatures_'+ amc_string +'.csv')
 
 # Save error measures in CSV
 ids_df.to_csv('Summer_weekdays_RMSE_' + amc_string + '.csv', header=False, index=False)
+=======
+gauss_df.to_csv('Winter_weekdays_FitFeatures_'+ amc_string +'.csv')
+
+# Save error measures in CSV
+ids_df.to_csv('Winter_weekdays_RMSE_' + amc_string + '.csv', header=False, index=False)
+>>>>>>> 72f0ff34f9d4f6a2cba1bbad9479d7850fddfe18
