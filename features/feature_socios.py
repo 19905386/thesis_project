@@ -16,7 +16,7 @@ from glob import glob
 import json
 import feather
 
-from support import feature_dir, fdata_dir, InputError, writeLog, validYears, table_dir
+from support import feature_dir, fdata_dir, InputError, validYears, table_dir# writeLog,
 
 
 def loadTable(name, query=None, columns=None):
