@@ -131,7 +131,7 @@ def xBins(X, bin_type):
         Xamd = resampleProfiles(XmonthlyPower, interval='A', aggfunc='mean').reset_index().groupby('ProfileID').mean()
         Xamd.columns=['amd']
         
-        amd_bins = [0, 1, 50, 150, 400, 600, 1200, 2500, 4000]    
+        amd_bins = [0, 1, 50, 150, 400, 600, 1000, 4000]# Change 2000 bsk to 2500 later    
         bin_labels = ['{0:.0f}-{1:.0f}'.format(x,y) for x, y in zip(amd_bins[:-1], amd_bins[1:])]    
         Xamd['bins'] = pd.cut(Xamd.amd, amd_bins, labels=bin_labels, right=True, include_lowest=True)
         
