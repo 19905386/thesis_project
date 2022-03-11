@@ -261,7 +261,7 @@ def straight_line(m,x,b):
 # Function that extracts the gauss fit parameters
 def extractFIT(dataframe, houseID):
     df, check = describe_household(dataframe, houseID)
-    print(df)
+    # print(df)
     if check == False:
         return False,False,False,False,False,False,False,False,False, check
 
