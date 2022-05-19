@@ -57,6 +57,7 @@ def find_peaksMA(X):
         indices_M = np.where(arrayYM[0] == np.amax(arrayYM[0]))
         # print("arrayYM = {}".format(arrayYM))
         all_zeros = not np.any(arrayYM[0])
+        print(all_zeros)
         if all_zeros == True:
             return df, False
         # print("all_zeros = {}".format(all_zeros))
@@ -66,6 +67,7 @@ def find_peaksMA(X):
         arrayYA[0][np.where(arrayYA[0] == np.amax(arrayYA[0]))] = 0
         indices_A = np.where(arrayYA[0] == np.amax(arrayYA[0]))
         all_zeros = not np.any(arrayYA[0])
+        print(all_zeros)
         if all_zeros == True:
             return df, False
 
